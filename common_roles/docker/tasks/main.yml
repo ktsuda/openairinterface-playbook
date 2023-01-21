@@ -1,0 +1,104 @@
+---
+- name: Check if docker command exists
+  become: no
+  shell: command -v docker > /dev/null 2>&1
+  register: docker_installed
+  changed_when: no
+  ignore_errors: yes
+
+- name: Install packages for docker installation
+  become: yes
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg-agent
+    - software-properties-common
+  when: docker_installed.rc != 0
+
+- name: Add docker's official gpg key
+  become: yes
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+  when: docker_installed.rc != 0
+ 
+- name: Verify we have the key with the fingerprint
+  become: yes
+  apt_key:
+    id: 0EBFCD88
+    state: present
+  when: docker_installed.rc != 0
+
+- name: Setup the docker stable repo
+  become: yes
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+    state: present
+    update_cache: yes
+  when: docker_installed.rc != 0
+
+- name: Install docker
+  become: yes
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+  when: docker_installed.rc != 0
+
+- name: Ensure group "docker" exists
+  group:
+    name: docker
+    state: present
+  when: docker_installed.rc != 0
+
+- name: Add user to docker group
+  become: yes
+  user:
+    name: "{{ ansible_ssh_user }}"
+    append: yes
+    groups: docker
+  when: docker_installed.rc != 0
+
+- name: Çheck if docker-compose command exists
+  become: no
+  shell: command -v docker-compose > /dev/null 2>&1
+  register: docker_compose_installed
+  changed_when: no
+  ignore_errors: yes
+
+- name: install docker-compose
+  become: yes
+  get_url:
+    url: https://github.com/docker/compose/releases/download/v2.7.0/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: "a+x"
+  when: docker_compose_installed.rc != 0
+
+- name: Install pip3
+  become: yes
+  apt:
+    name: python3-pip
+    state: present
+
+- name: Install python docker package
+  become: yes
+  pip:
+    name:
+      - docker
+
+- name: Restart docker daemon
+  become: yes
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: docker
+  when: docker_installed.rc != 0
