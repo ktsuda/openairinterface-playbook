@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  ansible:
+    image: local/ansible:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ansible
+    volumes:
+      - .:/ansible
+    working_dir: /ansible
+    command: ash
+    stdin_open: true
+    tty: true
