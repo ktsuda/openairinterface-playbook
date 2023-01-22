@@ -1,0 +1,7 @@
+---
+- hosts: dockerservers
+  gather_facts: no
+  vars_files:
+    - ../common/vars/common.yml
+  roles:
+    - ../common/roles/docker
