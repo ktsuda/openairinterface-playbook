@@ -1,4 +1,5 @@
 .PHONY: build rebuild login test stop clean
+.PHONY: docker ansible
 
 build:
 	@docker-compose build
@@ -6,8 +7,10 @@ rebuild:
 	@docker-compose build --no-cache
 login:
 	@docker-compose run --rm ansible ash
-test:
-	@docker-compose run --rm ansible ansible-playbook -vvv -k -K -i docker/local docker/site.yml
+ansible:
+	@docker-compose run --rm ansible ansible-playbook -i ansible/local ansible/site.yml
+docker:
+	@docker-compose run --rm ansible ansible-playbook -k -K -i docker/local docker/site.yml
 stop:
 	@docker-compose down
 clean: stop
