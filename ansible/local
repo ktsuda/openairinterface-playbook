@@ -1,0 +1,5 @@
+[ansibleservers]
+localhost
+
+[local:children]
+ansibleservers
