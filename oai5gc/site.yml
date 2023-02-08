@@ -1,0 +1,2 @@
+---
+- import_playbook: oai5gcservers.yml
