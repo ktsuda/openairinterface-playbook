@@ -1,0 +1,32 @@
+---
+- name: Pull oai images
+  become: yes
+  docker_image:
+    name: "oaisoftwarealliance/{{ item }}"
+    repository: "{{ item }}"
+    force_tag: yes
+    source: pull
+  with_items:
+    - oai-amf:develop
+    - oai-nrf:develop
+    - oai-spgwu-tiny:develop
+    - oai-smf:develop
+    - oai-udr:develop
+    - oai-udm:develop
+    - oai-ausf:develop
+    - oai-upf-vpp:develop
+    - oai-nssf:develop
+
+- name: Pull mysql image
+  become: yes
+  docker_image:
+    name: mysql:5.7
+    source: pull
+
+- name: Pull sg image
+  become: yes
+  docker_image:
+    name: oaisoftwarealliance/trf-gen-cn5g:latest
+    repository: trf-gen-cn5g:latest
+    force_tag: yes
+    source: pull

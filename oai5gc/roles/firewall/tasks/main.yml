@@ -1,0 +1,22 @@
+---
+- name: Install packages for 5gc
+  become: yes
+  apt:
+    name: "{{ oai5gc_packages }}"
+    state: present
+    install_recommends: no
+    update_cache: yes
+
+- name: Allow forwarding
+  become: yes
+  iptables:
+    chain: FORWARD
+    policy: ACCEPT
+
+- name: Save iptables
+  become: yes
+  community.general.iptables_state:
+    ip_version: ipv4
+    table: filter
+    state: saved
+    path: /etc/iptables/rules.v4
