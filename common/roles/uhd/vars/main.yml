@@ -1,0 +1,10 @@
+---
+uhd_packages:
+  - libboost-all-dev
+  - libusb-1.0-0-dev
+  - python3-mako
+  - python3-requests
+  - python3-docutils
+  - doxygen
+  - cmake
+  - git

@@ -1,0 +1,66 @@
+---
+- name: Install packages for UHD
+  become: yes
+  apt:
+    name: "{{ uhd_packages }}"
+    state: present
+    install_recommends: no
+    update_cache: yes
+
+- name: Get env variables
+  become: no
+  setup:
+    filter:
+      - "ansible_env"
+
+- name: Check if UHD is installed
+  become: no
+  stat:
+    path: "/usr/local/bin/uhd_usrp_probe"
+  register: uhd_installed
+
+- name: Check the version of UHD
+  command: "/usr/local/bin/uhd_usrp_probe --version"
+  register: uhd_version
+  changed_when: false
+  when: uhd_installed.stat.exists == true
+
+- name: Clone UHD
+  become: false
+  git:
+    repo: "https://github.com/EttusResearch/uhd"
+    dest: "{{ ansible_env.HOME }}/uhd"
+    clone: yes
+    version: UHD-4.0
+    update: no
+  when: (uhd_installed.stat.exists == false) or
+        (uhd_installed.stat.exists == true and uhd_version.stdout != "4.0.0.0-240-gb38c9d83")
+
+- name: Ensure build directory exists
+  become: false
+  file:
+    path: "{{ ansible_env.HOME }}/uhd/host/build"
+    state: directory
+    recurse: yes
+  when: (uhd_installed.stat.exists == false) or
+        (uhd_installed.stat.exists == true and uhd_version.stdout != "4.0.0.0-240-gb38c9d83")
+
+- name: Build UHD
+  become: false
+  shell:
+    chdir: "{{ ansible_env.HOME }}/uhd/host/build"
+    cmd: cmake .. && make && make test
+  when: (uhd_installed.stat.exists == false) or
+        (uhd_installed.stat.exists == true and uhd_version.stdout != "4.0.0.0-240-gb38c9d83")
+
+- name: Install UHD
+  become: yes
+  shell:
+    chdir: "{{ ansible_env.HOME }}/uhd/host/build"
+    cmd: make install
+  when: (uhd_installed.stat.exists == false) or
+        (uhd_installed.stat.exists == true and uhd_version.stdout != "4.0.0.0-240-gb38c9d83")
+
+- name: Download FPGA images
+  become: yes
+  command: "/usr/local/bin/uhd_images_downloader"
