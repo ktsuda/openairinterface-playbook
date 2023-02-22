@@ -1,0 +1,82 @@
+---
+- name: Install the lowlatency kernel
+  become: yes
+  apt:
+    name: "{{ item }}"
+    state: present
+    install_recommends: no
+    update_cache: yes
+  with_items:
+    - linux-headers-5.15.0-56-lowlatency
+    - linux-image-5.15.0-56-lowlatency
+
+- name: Check if you can select kernel from menu
+  shell: grep GRUB_TIMEOUT_STYLE /etc/default/grub | grep -c menu
+  register: grub_timeout_style
+  ignore_errors: true
+  changed_when: false
+
+- name: Set timeout style 
+  become: yes
+  lineinfile:
+    dest: "/etc/default/grub"
+    regexp: 'GRUB_TIMEOUT_STYLE=(.*)'
+    line: 'GRUB_TIMEOUT_STYLE=menu'
+    backrefs: yes
+  when: grub_timeout_style.stdout == "0"
+
+- name: Check if timeout is ten seconds
+  shell: grep GRUB_TIMEOUT /etc/default/grub | grep -c 10
+  register: grub_timeout
+  ignore_errors: true
+  changed_when: false
+
+- name: Set timeout style 
+  become: yes
+  lineinfile:
+    dest: "/etc/default/grub"
+    regexp: 'GRUB_TIMEOUT=(.*)'
+    line: 'GRUB_TIMEOUT=10'
+    backrefs: yes
+  when: grub_timeout.stdout == "0"
+
+- name: Check if default is the new kernel
+  shell: grep GRUB_DEFAULT /etc/default/grub | grep -c 5.15.0-56-lowlatency
+  register: grub_default
+  ignore_errors: true
+  changed_when: false
+
+- name: Set the default kernel
+  become: yes
+  lineinfile:
+    dest: "/etc/default/grub"
+    regexp: 'GRUB_DEFAULT=(.*)'
+    line: 'GRUB_DEFAULT="Advanced options for Ubuntu>Ubuntu, with Linux 5.15.0-56-lowlatency"'
+    backrefs: yes
+  when: grub_default.stdout == "0"
+
+- name: Update-grub
+  become: yes
+  shell: update-grub2
+  when: (grub_timeout_style.stdout == "0") or
+        (grub_timeout.stdout == "0") or
+        (grub_default.stdout == "0")
+
+- name: Reboot if we need it
+  become: yes
+  reboot:
+    reboot_timeout: 3600
+  when: (grub_timeout_style.stdout == "0") or
+        (grub_timeout.stdout == "0") or
+        (grub_default.stdout == "0")
+
+- name: Waiting for server to come back
+  become: false
+  wait_for:
+    host: "{{ ansible_host }}"
+    state: started
+    port: 22
+    delay: 15
+  when: (grub_timeout_style.stdout == "0") or
+        (grub_timeout.stdout == "0") or
+        (grub_default.stdout == "0")
