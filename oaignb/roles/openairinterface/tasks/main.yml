@@ -1,0 +1,22 @@
+---
+- name: Get env variables
+  become: no
+  setup:
+    filter:
+      - "ansible_env"
+
+- name: Check if oai is installed
+  become: no
+  stat:
+    path: "{{ ansible_env.HOME }}/oai/cmake_targets/ran_build/build/nr-softmodem"
+  register: gnb_installed
+
+- name: Clone oai
+  become: false
+  git:
+    repo: "https://gitlab.eurecom.fr/oai/openairinterface5g"
+    dest: "{{ ansible_env.HOME }}/oai"
+    clone: yes
+    version: develop
+    update: no
+  when: gnb_installed.stat.exists == false 

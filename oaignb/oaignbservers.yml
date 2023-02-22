@@ -1,0 +1,11 @@
+---
+- hosts: oaignbservers
+  gather_facts: no
+  vars_files:
+    - ../common/vars/common.yml
+  roles:
+    - ../common/roles/ubuntu
+    - ../common/roles/lowlatency
+    - ../common/roles/uhd
+    - openairinterface
+
