@@ -1,0 +1,16 @@
+---
+oai_image_info:
+  - { name: oai-nssf, sha256: 938286a7ee97436b10dd6702973342fa401b3abfb137c8b1decbba6c008b3ca4, tag: develop, id: d9ff42d98802 }
+  - { name: oai-smf, sha256: 110cf42182d184ab3b319ef7da3f97f15c8016057b52879f2a2bc5f7b0a1dd4b, tag: develop, id: 113affb7813d }
+  - { name: oai-udm, sha256: 1a13ad5ca10966aabde68f198dbad1849188fb6b56e6451ff34fa4545fda1102, tag: develop, id: 5b54c852d992 }
+  - { name: oai-udr, sha256: 28e3d2b3fbf66ebe80f7d49ad42f7a8f8aea069c272666030dabaad7fccc3d1f, tag: develop, id: f475d2f2b132 }
+  - { name: oai-ausf, sha256: 698a1fcd04fd2f6208e08ea2443c847eb155577b752cb72f7081f543747e39bf, tag: develop, id: 342df30180da }
+  - { name: oai-amf, sha256: cd64ebf2f821beb8f526323c75c79f1e8659363d6d0e829886fd8c163864aa9d, tag: develop, id: 3a4fbe7004ec }
+  - { name: oai-spgwu-tiny, sha256: f988c635a5f368c3413376de12098bfd43dd7179a9db7c782f0b4bc8750021e6, tag: develop, id: 85fc4ccac1e4 }
+  - { name: oai-nrf, sha256: 417793aba57897fce62053c708dd77449a8114f0e57f3709a3c55cf0c5c948d8, tag: develop, id: 0c82fd616663 }
+  - { name: oai-upf-vpp, sha256: 88a3ede58cacb946f6c81eb013af581058b9bece45fe98283587c6e7e43bdaf5, tag: develop, id: aebf06667ca0 }
+  - { name: trf-gen-cn5g, sha256: b347ae3fd6ef7c8fc669edf3a9c4603585d6233a2fc4d03b2f67f33a7c69ee08, tag: latest, id: 59c43485f19e }
+  - { name: oai-lte-ue, sha256: 29dfca20c273552cfdf46a3db2e55676de3a856acb4982dcecafdf8d3143b2f0, tag: develop, id: 0fc0e8c6d98b }
+  - { name: oai-enb, sha256: 1539ea68849964d26951652fb977b20f9e289950de4d1d38ae3f7e5342472f4e, tag: develop, id: 36ae12c7d40e }
+  - { name: oai-nr-ue, sha256: 8ce2ecef00114091eea534afec4fbc34577fbd01c466fadfd4cfc929959b2067, tag: develop, id: 593cfd50b52d }
+  - { name: oai-gnb, sha256: 3f5b333857c91133c6fe5e62be01d94e7c8ebfb7e21231f83df0cd12744076c1, tag: develop, id: 1588c025ddcb }
